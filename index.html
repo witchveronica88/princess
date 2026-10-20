@@ -2262,8 +2262,8 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book > summary,
 .book > .row {
   display: grid;
-  grid-template-columns: calc(var(--fs-sub) * 4.4) minmax(0, 1fr) 14px;   /* 날짜 칸은 글씨 크기에 맞춰 */
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 14px;
+  gap: 10px 14px;
   align-items: center;
   padding: 16px 14px;
   background: var(--fold);
@@ -2275,9 +2275,9 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book.up > summary,
 .book.up > .row { grid-template-columns: 16px minmax(0, 1fr) 14px; }
 .book.has-cover > summary,
-.book.has-cover > .row { grid-template-columns: calc(var(--fs-sub) * 4.4) 40px minmax(0, 1fr) 14px; gap: 10px; }
+.book.has-cover > .row { grid-template-columns: 40px minmax(0, 1fr) 14px; }
 .book.up.has-cover > summary,
-.book.up.has-cover > .row { grid-template-columns: 16px 40px minmax(0, 1fr) 14px; }
+.book.up.has-cover > .row { grid-template-columns: 16px 40px minmax(0, 1fr) 14px; column-gap: 12px; }
 .book-cover {
   display: block;
   width: 40px;
@@ -2292,6 +2292,8 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book > summary::marker { content: ""; }
 .book > summary::after {
   content: "";
+  grid-row: 1;
+  grid-column: -2 / -1;
   justify-self: center;
   width: 7px;
   height: 7px;
@@ -2304,17 +2306,21 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book[open] > summary { box-shadow: inset 0 -1px 0 var(--line); }
 .book.flash > summary,
 .book.flash > .row { background: var(--accent-soft); transition: none; }
-.date {
-  align-self: center;
+/* 읽은 날짜: 표지·제목 줄 아래 점선을 긋고 그 밑에 (도서관 대출 카드처럼) */
+.rd {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  padding-top: 9px;
+  border-top: 1px dashed var(--line);
   color: var(--accent);
   font-size: var(--fs-sub);
-  font-weight: 700;
-  line-height: 1.5;
-  text-align: center;
-  white-space: nowrap;
+  line-height: 1.4;
   font-variant-numeric: tabular-nums;
 }
-.date .dw { display: block; }   /* 요일은 둘째 줄 — 날짜 칸을 좁혀 책 제목 칸을 넓힘 */
+.rd .rl { color: var(--muted); }
 .idx {
   align-self: start;
   color: var(--accent);
@@ -2689,7 +2695,7 @@ tbody th { color: var(--text); font-weight: 700; white-space: nowrap; }
         b.year || '', b.label, b.up ? '읽을 책' : ''].filter(Boolean).join(' ');
       const date = b.up
         ? `<span class="idx" aria-hidden="true">${b.n}</span>`
-        : `<span class="date" aria-hidden="true">${b.mo}월 ${Number(b.dd)}일<span class="dw"> (${b.wd.slice(0, 1)})</span></span>`;
+        : `<p class="rd" aria-hidden="true"><span class="rl">모임</span>${b.year}. ${b.mo}. ${Number(b.dd)}. ${b.wd}</p>`;
       const head = `<div class="head"><h3 class="t">${esc(nb(b.t))}</h3>`
         + (b.a ? `<p class="a">${esc(b.a)}</p>` : '') + (b.up ? '' : `<span class="sr">${esc(b.sr)}</span>`) + '</div>';
       const facts = [['장르', b.genre], ['출간', b.pub], ['원제', b.orig], ['수상', b.award]].filter((f) => f[1]);
@@ -2704,7 +2710,7 @@ tbody th { color: var(--text); font-weight: 700; white-space: nowrap; }
       body += store(b);
       const cover = coverImg(b, 'book-cover');
       const cls = (b.up ? 'book up' : 'book') + (cover ? ' has-cover' : '') + (extra || '');
-      return `<details class="${cls}" id="${rowId || b.id}" data-h="${esc(hay)}"><summary>${date}${cover}${head}</summary><div class="body">${body}</div></details>`;
+      return `<details class="${cls}" id="${rowId || b.id}" data-h="${esc(hay)}"><summary>${b.up ? date : ''}${cover}${head}${b.up ? '' : date}</summary><div class="body">${body}</div></details>`;
     }
 
     // 읽을 책: 1번은 맨 위 ‘다음 책’ 카드, 목록의 같은 줄은 검색용으로만 남김
