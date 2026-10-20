@@ -2290,19 +2290,18 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book > .row { cursor: default; }
 .book > summary::-webkit-details-marker { display: none; }
 .book > summary::marker { content: ""; }
-.book > summary::after {
+.book > summary::after {   /* 펼침 표시: ＋, 펼치면 － */
   content: "";
   grid-row: 1;
   grid-column: -2 / -1;
   justify-self: center;
-  width: 7px;
-  height: 7px;
-  border-right: 1.5px solid var(--muted);
-  border-bottom: 1.5px solid var(--muted);
-  transform: translateY(-2px) rotate(45deg);
-  transition: transform .16s ease;
+  width: 11px;
+  height: 11px;
+  background: linear-gradient(var(--muted), var(--muted)) center / 11px 1.5px no-repeat,
+              linear-gradient(var(--muted), var(--muted)) center / 1.5px 11px no-repeat;
+  transition: background-size .16s ease;
 }
-.book[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+.book[open] > summary::after { background-size: 11px 1.5px, 1.5px 0; }
 .book[open] > summary { box-shadow: inset 0 -1px 0 var(--line); }
 .book.flash > summary,
 .book.flash > .row { background: var(--accent-soft); transition: none; }
