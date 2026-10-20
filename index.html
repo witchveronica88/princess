@@ -2197,6 +2197,7 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
   justify-content: flex-end;   /* 도서관 청구기호 라벨처럼 글씨는 아래쪽에 가지런히 */
   gap: 9px;
   min-width: 0;
+  container-type: inline-size;   /* 책등 폭에 맞춰 연도 글씨 크기를 잡기 위해 */
   height: calc(88px + var(--h) * 30px);
   padding: 0 0 7px;
   border: 1px solid var(--shelf);
@@ -2219,7 +2220,8 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .spine::before { top: 6px; }
 .spine::after { bottom: 23px; }
 .spine-y {             /* 실제 책등처럼 글씨를 눕혀 위에서 아래로. 책장은 글씨 크기 버튼과 상관없이 고정 */
-  font-size: 14px;
+  font-size: 17px;
+  font-size: min(17px, calc(100cqw - 6px));   /* 책등이 아주 좁은 화면에서만 조금 줄임 */
   font-weight: 600;
   line-height: 1;
   writing-mode: vertical-rl;
@@ -2231,7 +2233,7 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
   display: block;
   width: 100%;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1;
   text-align: center;
   letter-spacing: 0;
