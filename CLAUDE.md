@@ -1,6 +1,6 @@
 # 독서 모임 페이지
 
-`index.html` 한 파일과 `assets/covers/` 표지 그림이 전부다. GitHub Pages로 `https://witchveronica88.github.io/book/` 에 공개되며,
+`index.html` 한 파일과 `assets/covers/` 표지 그림이 전부다. GitHub Pages로 `https://witchveronica88.github.io/princess/` 에 공개되며,
 `main` 브랜치에 올리면 1~2분 뒤 그 주소에 반영된다. 모임 사람들은 이 주소 하나만 쓴다.
 Claude와 뮤즈가 같은 파일을 고친다. 고치기 전에 항상 `main`의 최신 내용을 받아서 시작한다.
 
