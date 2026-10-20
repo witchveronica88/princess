@@ -2306,8 +2306,27 @@ svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-widt
 .book[open] > summary { box-shadow: inset 0 -1px 0 var(--line); }
 .book.flash > summary,
 .book.flash > .row { background: var(--accent-soft); transition: none; }
-/* 읽은 날짜: 작가 이름 바로 아래, 작은 회색 글씨 */
-.rd { margin: 3px 0 0; color: var(--muted); font-size: calc(var(--fs-sub) - 2px); line-height: 1.4; font-variant-numeric: tabular-nums; }
+/* 읽은 책 줄: [표지][제목 / 작가][날짜 / 펼침 표시].
+   날짜(3.15.금)는 오른쪽 위, 제목 줄과 가운데를 맞춘 작은 회색 글씨 */
+.book:not(.up) > summary { grid-template-rows: 1fr auto auto 1fr; row-gap: 0; }
+.book:not(.up).has-cover > summary { grid-template-columns: 40px minmax(0, 1fr) auto; }
+.book:not(.up):not(.has-cover) > summary { grid-template-columns: minmax(0, 1fr) auto; }
+.book:not(.up) > summary > .book-cover { grid-row: 1 / -1; }
+.book:not(.up) > summary > .head { display: contents; }
+.book:not(.up) > summary .t { grid-row: 2; grid-column: -3 / -2; }
+.book:not(.up) > summary .a { grid-row: 3; grid-column: -3 / -2; }
+.book:not(.up) > summary::after { grid-row: 3; }
+.rd {
+  grid-row: 2;
+  grid-column: -2 / -1;
+  align-self: center;
+  justify-self: center;
+  color: var(--muted);
+  font-size: calc(var(--fs-sub) - 2px);
+  line-height: 1.45;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 .idx {
   align-self: start;
   color: var(--accent);
@@ -2682,9 +2701,9 @@ tbody th { color: var(--text); font-weight: 700; white-space: nowrap; }
         b.year || '', b.label, b.up ? '읽을 책' : ''].filter(Boolean).join(' ');
       const date = b.up
         ? `<span class="idx" aria-hidden="true">${b.n}</span>`
-        : `<p class="rd" aria-hidden="true">${b.year}. ${b.mo}. ${Number(b.dd)}. ${b.wd}</p>`;
+        : `<span class="rd" aria-hidden="true">${b.mo}.${Number(b.dd)}.${b.wd.slice(0, 1)}</span>`;
       const head = `<div class="head"><h3 class="t">${esc(nb(b.t))}</h3>`
-        + (b.a ? `<p class="a">${esc(b.a)}</p>` : '') + (b.up ? '' : date + `<span class="sr">${esc(b.sr)}</span>`) + '</div>';
+        + (b.a ? `<p class="a">${esc(b.a)}</p>` : '') + (b.up ? '' : `<span class="sr">${esc(b.sr)}</span>`) + '</div>';
       const facts = [['장르', b.genre], ['출간', b.pub], ['원제', b.orig], ['수상', b.award]].filter((f) => f[1]);
       let body = '';
       if (facts.length) body += '<dl class="facts">' + facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('') + '</dl>';
@@ -2697,7 +2716,7 @@ tbody th { color: var(--text); font-weight: 700; white-space: nowrap; }
       body += store(b);
       const cover = coverImg(b, 'book-cover');
       const cls = (b.up ? 'book up' : 'book') + (cover ? ' has-cover' : '') + (extra || '');
-      return `<details class="${cls}" id="${rowId || b.id}" data-h="${esc(hay)}"><summary>${b.up ? date : ''}${cover}${head}</summary><div class="body">${body}</div></details>`;
+      return `<details class="${cls}" id="${rowId || b.id}" data-h="${esc(hay)}"><summary>${b.up ? date : ''}${cover}${head}${b.up ? '' : date}</summary><div class="body">${body}</div></details>`;
     }
 
     // 읽을 책: 1번은 맨 위 ‘다음 책’ 카드, 목록의 같은 줄은 검색용으로만 남김
